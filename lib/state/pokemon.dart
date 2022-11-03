@@ -1,11 +1,13 @@
+import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:poke_app/const.dart';
 part 'pokemon.freezed.dart';
 part 'pokemon.g.dart';
 
 @freezed
-class Pokemon with _$Pokemon { 
+abstract class Pokemon implements  _$Pokemon {
+  const Pokemon._(); 
   const factory Pokemon({ 
-    /// 友人の名前
     required int id, //requiredで必須項目にする
     required String name,
     int? baseExperience,
@@ -28,4 +30,14 @@ class Pokemon with _$Pokemon {
 
   factory Pokemon.fromJson(Map<String, dynamic> json) =>
           _$PokemonFromJson(json);
+
+  dynamic getTypeColor() {
+    List<Color> colors = [];
+
+    for (dynamic type in types) {
+      colors.add(typeColors[type["type"]["name"]]!);
+    }
+
+    return colors;
+  }
 }

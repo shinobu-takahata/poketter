@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poke_app/main.dart';
-import 'package:poke_app/state/pokemons.dart';
+import 'package:poke_app/state/pokemon.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class PokemonList extends ConsumerWidget {
   const PokemonList({Key? key}) : super(key: key);
 static const _threshold = 0.9;
 
-  Widget _cardItem(String imageUrl) {
-    var result = Container();
+  Widget _cardItem(Pokemon pokemon) {
 
     return Row(
       children: [
         CachedNetworkImage(
           height: 150,
           width: 100,
-          imageUrl: imageUrl
+          imageUrl: pokemon.sprites!['front_default']!
         ),
-        Column(
-          children: [
-            Text('TEST'),
-          ],
+        Container(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Text(pokemon.name),
+            ],
+          ),
         ),
         Expanded(child: 
           Container(
@@ -35,31 +34,37 @@ static const _threshold = 0.9;
         ),
       ],
     );
-    return Container();
   }
 
-  Widget _card(String imageUrl) {
+  Widget _card(Pokemon pokemon) {
+    List<Color> colors = pokemon.getTypeColor();
+
     return Card(
-      color: Colors.green, // Card自体の色
+      color: pokemon.getTypeColor()[0], // Card自体の色
       margin: const EdgeInsets.all(10),
       elevation: 8, // 影の離れ具合
       shadowColor: Colors.black ,// 影の色
       shape: RoundedRectangleBorder( // 枠線を変更できる
         borderRadius: BorderRadius.circular(10),
       ),
-      child: _cardItem(imageUrl),
-      // child: ListTile(
-      //   title: Text('Card03'),
-      //   // title: Image.network(imageUrl),
-      //   subtitle: Text('Card SubTitle'),
-      //   // trailing:Image.network(imageUrl),
-      //   leading: CachedNetworkImage(
-      //     height: 150,
-      //     width: 100,
-      //     imageUrl: imageUrl
-      //   ),
-      //   trailing: Icon(Icons.add),
-      // ),
+      child: colors.length == 1 ? 
+            _cardItem(pokemon) : // タイプが1つしかないなら背景色を単色に
+            Container( // タイプが複数の場合、背景色を複数に
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: const [
+                    0.5,
+                    0.5,
+                  ],
+                  colors: colors,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: _cardItem(pokemon),
+            ),
+
     );
   }
 
@@ -88,9 +93,6 @@ static const _threshold = 0.9;
         //   }
         // }
 
-        
-        // if (!state.isLoading) {
-        // }
         return false;
       },
       child: state.pokemons!.isNotEmpty
@@ -98,17 +100,12 @@ static const _threshold = 0.9;
                 itemExtent: 150,
                 itemCount: state.pokemons!.length + 1,
                 itemBuilder: (BuildContext context, int index){
-                  // var test = state.pokemons![index];
-                  // if (index >= state.pokemons!.length - 1) {
-                  //   ref.watch(pokemonsProvider.notifier)
-                  //     .changeOffset();
-                  // }
                   if (index >= state.pokemons!.length) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );  
                   } else {
-                    return _card(state.pokemons![index].sprites!['front_default']!);
+                    return _card(state.pokemons![index]);
                   }
                 })
             : _emptyListView(),

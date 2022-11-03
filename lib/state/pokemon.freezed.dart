@@ -20,7 +20,6 @@ Pokemon _$PokemonFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Pokemon {
-  /// 友人の名前
   int get id => throw _privateConstructorUsedError; //requiredで必須項目にする
   String get name => throw _privateConstructorUsedError;
   int? get baseExperience => throw _privateConstructorUsedError;
@@ -325,7 +324,7 @@ class __$$_PokemonCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Pokemon implements _Pokemon {
+class _$_Pokemon extends _Pokemon {
   const _$_Pokemon(
       {required this.id,
       required this.name,
@@ -344,12 +343,12 @@ class _$_Pokemon implements _Pokemon {
       this.sprites,
       this.species,
       this.stats,
-      this.types});
+      this.types})
+      : super._();
 
   factory _$_Pokemon.fromJson(Map<String, dynamic> json) =>
       _$$_PokemonFromJson(json);
 
-  /// 友人の名前
   @override
   final int id;
 //requiredで必須項目にする
@@ -468,7 +467,7 @@ class _$_Pokemon implements _Pokemon {
   }
 }
 
-abstract class _Pokemon implements Pokemon {
+abstract class _Pokemon extends Pokemon {
   const factory _Pokemon(
       {required final int id,
       required final String name,
@@ -488,12 +487,11 @@ abstract class _Pokemon implements Pokemon {
       final dynamic species,
       final dynamic stats,
       final dynamic types}) = _$_Pokemon;
+  const _Pokemon._() : super._();
 
   factory _Pokemon.fromJson(Map<String, dynamic> json) = _$_Pokemon.fromJson;
 
   @override
-
-  /// 友人の名前
   int get id;
   @override //requiredで必須項目にする
   String get name;
