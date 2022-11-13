@@ -10,7 +10,7 @@ class Pokemons with _$Pokemons {
   factory Pokemons({
     @Default([]) List<Pokemon>? pokemons,
     @Default(false) isLoading,
-    @Default(1) int offset,
+    @Default(0) int offset,
     final String? error,
   }) = _Pokemons;
 

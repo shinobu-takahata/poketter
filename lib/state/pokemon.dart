@@ -40,4 +40,13 @@ abstract class Pokemon implements  _$Pokemon {
 
     return colors;
   }
+
+  // 種族値
+  int get getHp       => stats[0]['base_stat'];
+  int get getAttack   => stats[1]['base_stat'];
+  int get getDefence  => stats[2]['base_stat'];
+  int get getSAttack  => stats[3]['base_stat'];
+  int get getSDefence => stats[4]['base_stat'];
+  int get getSpeed    => stats[5]['base_stat'];
+  
 }

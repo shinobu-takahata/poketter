@@ -125,7 +125,7 @@ class _$_Pokemons implements _Pokemons {
   _$_Pokemons(
       {final List<Pokemon>? pokemons = const [],
       this.isLoading = false,
-      this.offset = 1,
+      this.offset = 0,
       this.error})
       : _pokemons = pokemons;
 

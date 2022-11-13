@@ -39,6 +39,7 @@ dependencies:
   json_serializable: ^6.5.3
   flutter_riverpod: ^2.0.2
   cached_network_image: ^3.2.1
+  syncfusion_flutter_gauges: ^20.3.56
   
 dev_dependencies:
   flutter_test:
