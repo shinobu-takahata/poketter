@@ -21,3 +21,14 @@ Future<dynamic> fetchPokemonOffset2(int limit, int offset) async{
     throw Exception('Failed to load Pokemon');
   }
 }
+
+
+Future<dynamic> fetchPokemon(dynamic idOrName) async{
+  final res = await http.get(Uri.parse('$apiPokemonRoute/$idOrName'));
+  if (res.statusCode == 200) {
+    Pokemon pokemon = Pokemon.fromJson(json.decode(res.body));
+    return pokemon;
+  } else {
+    throw Exception('Failed to load Pokemon');
+  }
+}

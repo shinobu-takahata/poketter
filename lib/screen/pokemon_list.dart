@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poke_app/notifier/pokemon_notifier.dart';
+import 'package:poke_app/notifier/target_pokemon_norifier.dart';
 import 'package:poke_app/state/pokemon.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:poke_app/state/pokemons.dart';
+import 'package:poke_app/state/target_pokemon.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
+// コンストラクタで、フェッチを行う
 final pokemonsProvider = StateNotifierProvider<PokemonNotifier, Pokemons>(
   (ref) => PokemonNotifier()
+);
+
+final targetPokemonProvider = StateNotifierProvider<TargetPokemonNotifier, TargetPokemon>(
+  (ref) => TargetPokemonNotifier(),
 );
 
 class PokemonList extends ConsumerWidget {
@@ -106,13 +113,18 @@ class PokemonList extends ConsumerWidget {
 
         // お気に入りアイコン
         Expanded(child: 
-          Container(
-            padding: const EdgeInsets.all(20.0),
-            alignment: Alignment.topRight,
-            child: const Icon(
-                      Icons.favorite_border_rounded,
-                      color: Colors.black38,
-                    ),
+          GestureDetector(
+            onTap: () {
+              print('========================= favorite !! ======================');
+            },
+            child: Container(
+              padding: const EdgeInsets.all(20.0),
+              alignment: Alignment.topRight,
+              child: const Icon(
+                        Icons.favorite_border_rounded,
+                        color: Colors.black38,
+                      ),
+            ),
           )
         ),
       ],
@@ -120,35 +132,43 @@ class PokemonList extends ConsumerWidget {
   }
 
   // カード要素の土台Widget
-  Widget _card(Pokemon pokemon) {
+  Widget _card(Pokemon pokemon, WidgetRef ref) {
     List<Color> colors = pokemon.getTypeColor();
 
-    return Card(
-      color: pokemon.getTypeColor()[0], // Card自体の色
-      margin: const EdgeInsets.all(10),
-      elevation: 8, // 影の離れ具合
-      shadowColor: Colors.black ,// 影の色
-      shape: RoundedRectangleBorder( // 枠線を変更できる
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: colors.length == 1 ? 
-            _cardItem(pokemon) : // タイプが1つしかないなら背景色を単色に
-            Container( // タイプが複数の場合、背景色を複数に
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [
-                    0.5,
-                    0.5,
-                  ],
-                  colors: colors,
+    return GestureDetector(
+      // 詳細画面に飛ぶために、対象のポケモンの情報をStateに保持しておく
+      onTap: () {
+        // 対象を保持
+        ref.watch(targetPokemonProvider.notifier).fetch(pokemon);
+        // 画面遷移
+      },
+      child: Card(
+        color: pokemon.getTypeColor()[0], // Card自体の色
+        margin: const EdgeInsets.all(10),
+        elevation: 8, // 影の離れ具合
+        shadowColor: Colors.black ,// 影の色
+        shape: RoundedRectangleBorder( // 枠線を変更できる
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: colors.length == 1 ? 
+              _cardItem(pokemon) : // タイプが1つしかないなら背景色を単色に
+              Container( // タイプが複数の場合、背景色を複数に
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: const [
+                      0.5,
+                      0.5,
+                    ],
+                    colors: colors,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                borderRadius: BorderRadius.circular(10),
+                child: _cardItem(pokemon),
               ),
-              child: _cardItem(pokemon),
-            ),
-
+    
+      ),
     );
   }
 
@@ -198,7 +218,7 @@ class PokemonList extends ConsumerWidget {
                       if (index >= state.pokemons!.length) {
                         return _waitingListView();  
                       } else {
-                        return _card(state.pokemons![index]);
+                        return _card(state.pokemons![index], ref);
                       }
                     }),
             )
