@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:poke_app/notifier/pokemon_notifier.dart';
+import 'package:poke_app/notifier/target_pokemon_norifier.dart';
 import 'package:poke_app/screen/my_home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:poke_app/screen/pokemon_list.dart';
 import 'package:poke_app/state/pokemons.dart';
+import 'package:poke_app/state/target_pokemon.dart';
 
+final targetPokemonProvider = StateNotifierProvider<TargetPokemonNotifier, TargetPokemon>(
+  (ref) => TargetPokemonNotifier(),
+);
 
 void main() {
   runApp(const ProviderScope(child:MyApp()));

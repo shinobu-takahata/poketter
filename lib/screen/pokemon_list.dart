@@ -1,7 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:poke_app/main.dart';
 import 'package:poke_app/notifier/pokemon_notifier.dart';
 import 'package:poke_app/notifier/target_pokemon_norifier.dart';
+import 'package:poke_app/screen/pokemon_detail.dart';
 import 'package:poke_app/state/pokemon.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:poke_app/state/pokemons.dart';
@@ -13,9 +16,6 @@ final pokemonsProvider = StateNotifierProvider<PokemonNotifier, Pokemons>(
   (ref) => PokemonNotifier()
 );
 
-final targetPokemonProvider = StateNotifierProvider<TargetPokemonNotifier, TargetPokemon>(
-  (ref) => TargetPokemonNotifier(),
-);
 
 class PokemonList extends ConsumerWidget {
   const PokemonList({Key? key}) : super(key: key);
@@ -74,6 +74,7 @@ class PokemonList extends ConsumerWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 // color: const Color.fromARGB(255, 110, 137, 151).withOpacity(0.3),
+                // withOpacity ... 背景色の透過
                 color: Colors.white.withOpacity(0.5)
               ),
               child: Text(
@@ -141,6 +142,12 @@ class PokemonList extends ConsumerWidget {
         // 対象を保持
         ref.watch(targetPokemonProvider.notifier).fetch(pokemon);
         // 画面遷移
+        Navigator.push(
+          ref.context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => const PokemonDetail(),
+          ),
+        );
       },
       child: Card(
         color: pokemon.getTypeColor()[0], // Card自体の色
